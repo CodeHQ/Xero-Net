@@ -10,14 +10,18 @@ namespace Xero.Api.Infrastructure.OAuth
     {
         private readonly string _authorizeUri;
         private readonly string _tokenUri;
+        private readonly ITokenStore _tokenStore;
         private const string XeroRequestUri = "oauth/RequestToken";
         private const string XeroAccessTokenUri = "oauth/AccessToken";
         private const string XeroAuthorizeUri = "oauth/Authorize";
 
-        public OAuthTokens(string authorizeUri, string tokenUri)
+        public const string XeroMigrate = "/oauth/migrate";
+
+        public OAuthTokens(string authorizeUri, string tokenUri, ITokenStore tokenStore)
         {
             _authorizeUri = authorizeUri;
             _tokenUri = tokenUri;
+            _tokenStore = tokenStore;
         }
 
         public string AuthorizeUri
@@ -48,6 +52,13 @@ namespace Xero.Api.Infrastructure.OAuth
                 return XeroAccessTokenUri;
             }
         }
+        public string MigrateUri
+        {
+            get
+            {
+                return XeroMigrate;
+            }
+        }
 
         public IToken GetRequestToken(IConsumer consumer, string header)
         {
@@ -66,7 +77,7 @@ namespace Xero.Api.Infrastructure.OAuth
 
         public IToken GetToken(string baseUri, IToken consumer, string endPoint, string header)
         {
-            var req = new HttpClient(baseUri)
+            var req = new HttpClient(baseUri, _tokenStore)
             {
                 UserAgent = "Xero Api wrapper - " + consumer.ConsumerKey
             };

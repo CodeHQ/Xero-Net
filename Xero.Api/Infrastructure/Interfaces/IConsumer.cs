@@ -7,7 +7,18 @@ namespace Xero.Api.Infrastructure.Interfaces
         string ConsumerKey { get; }
         string ConsumerSecret { get; }
     }
-
+    public interface IOAuth2Token
+    {
+        string AccessToken { get; set; }
+        DateTimeOffset Expires { get; set; }
+        int ExpiresIn { get; set; }
+        bool HasExpired { get; }
+        string IdToken { get; set; }
+        string RefreshToken { get; set; }
+        string Scope { get; set; }
+        string TokenType { get; set; }
+        string XeroUserId { get; set; }
+    }
     public interface IToken
     {
         string UserId { get; set; }

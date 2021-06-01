@@ -7,7 +7,7 @@ using Xero.Api.Infrastructure.OAuth.Signing;
 namespace Xero.Api.Example.Applications.Partner
 {
     public class PartnerAuthenticator : TokenStoreAuthenticator
-    {       
+    {
         private readonly X509Certificate2 _signingCertificate;
         private string _scope;
 
@@ -43,6 +43,11 @@ namespace Xero.Api.Example.Applications.Partner
             Console.WriteLine("Enter the PIN given on the web page");
 
             return Console.ReadLine();
+        }
+        public string GetMigrationAuthHeader(IToken sessionToken)
+        {
+            var authHeader = GetAuthorization(sessionToken, "POST", Tokens.MigrateUri, null, null, true);
+            return authHeader;
         }
 
         protected override string CreateSignature(IToken token, string verb, Uri uri,

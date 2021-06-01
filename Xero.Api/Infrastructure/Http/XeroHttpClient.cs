@@ -28,15 +28,15 @@ namespace Xero.Api.Infrastructure.Http
         }
 
         public XeroHttpClient(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user,
-            IJsonObjectMapper jsonMapper, IXmlObjectMapper xmlMapper)
-            : this(baseUri, auth, consumer, user, jsonMapper, xmlMapper, null)
+            IJsonObjectMapper jsonMapper, IXmlObjectMapper xmlMapper, ITokenStore tokenStore)
+            : this(baseUri, auth, consumer, user, jsonMapper, xmlMapper, null, tokenStore)
         {
         }
 
-        public XeroHttpClient(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user, IJsonObjectMapper jsonMapper, IXmlObjectMapper xmlMapper, IRateLimiter rateLimiter)
+        public XeroHttpClient(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user, IJsonObjectMapper jsonMapper, IXmlObjectMapper xmlMapper, IRateLimiter rateLimiter, ITokenStore tokenStore)
             : this(jsonMapper, xmlMapper)
         {
-            Client = new HttpClient(baseUri, auth, consumer, user, rateLimiter);
+            Client = new HttpClient(baseUri, tokenStore, auth, consumer, user, rateLimiter);
         }
 
         public DateTime? ModifiedSince { get; set; }

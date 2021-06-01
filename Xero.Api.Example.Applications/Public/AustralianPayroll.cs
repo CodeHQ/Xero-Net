@@ -23,7 +23,8 @@ namespace Xero.Api.Example.Applications.Public
                 user,
                 Mapper,
                 Mapper,
-                includeRateLimiter ? new RateLimiter() : null)
+                includeRateLimiter ? new RateLimiter() : null,
+                store)
         {
         }
     }

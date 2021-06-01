@@ -20,7 +20,7 @@ namespace Xero.Api.Example.Applications
             {
                 if (_tokens == null)
                 {
-                    _tokens = new OAuthTokens(_tokenUri, BaseUri);
+                    _tokens = new OAuthTokens(_tokenUri, BaseUri, Store);
                 }
                 return _tokens;
             }
@@ -73,7 +73,9 @@ namespace Xero.Api.Example.Applications
             get { return Store != null; }
         }
 
-        public IUser User { get; set; }
+        public string TenantId { get; set; }
+
+        public string XeroUserId { get; set; }
 
         protected abstract string AuthorizeUser(IToken oauthToken);
         protected abstract string CreateSignature(IToken token, string verb, Uri uri, string verifier,

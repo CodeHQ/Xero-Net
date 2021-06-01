@@ -43,7 +43,6 @@ namespace Xero.Api.Example.Applications.Partner
         {
             return new RsaSha1Signer().CreateSignature(_signingCertificate, token, uri, verb, verifier, renewToken, callback);
         }
-
         protected override IToken RenewToken(IToken sessionToken, IConsumer consumer)
         {
             var authHeader = GetAuthorization(sessionToken, "POST", Tokens.AccessUri, null, null, true);

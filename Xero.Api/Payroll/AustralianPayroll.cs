@@ -11,13 +11,13 @@ namespace Xero.Api.Payroll
     public class AustralianPayroll : PayrollApi
     {
         public AustralianPayroll(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user,
-            IJsonObjectMapper readMapper, IXmlObjectMapper writeMapper)
-            : this(baseUri, auth, consumer, user, readMapper, writeMapper, null)
+            IJsonObjectMapper readMapper, IXmlObjectMapper writeMapper, ITokenStore tokenStore)
+            : this(baseUri, auth, consumer, user, readMapper, writeMapper, null, tokenStore)
         {
         }
 
-        public AustralianPayroll(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user, IJsonObjectMapper readMapper, IXmlObjectMapper writeMapper, IRateLimiter rateLimiter)
-            : base(baseUri, auth, consumer, user, readMapper, writeMapper, rateLimiter)
+        public AustralianPayroll(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user, IJsonObjectMapper readMapper, IXmlObjectMapper writeMapper, IRateLimiter rateLimiter, ITokenStore tokenStore)
+            : base(baseUri, auth, consumer, user, readMapper, writeMapper, rateLimiter, tokenStore)
         {
             Connect();
         }

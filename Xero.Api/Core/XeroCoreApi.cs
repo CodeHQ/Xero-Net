@@ -14,24 +14,24 @@ namespace Xero.Api.Core
     public class XeroCoreApi : XeroApi, IXeroCoreApi
     {
         public XeroCoreApi(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user,
-            IJsonObjectMapper readMapper, IXmlObjectMapper writeMapper)
-            : this(baseUri, auth, consumer, user, readMapper, writeMapper, null)
+            IJsonObjectMapper readMapper, IXmlObjectMapper writeMapper, ITokenStore tokenStore)
+            : this(baseUri, auth, consumer, user, readMapper, writeMapper, null, tokenStore)
         {
         }
 
-        public XeroCoreApi(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user, IJsonObjectMapper readMapper, IXmlObjectMapper writeMapper, IRateLimiter rateLimiter)
-            : base(baseUri, auth, consumer, user, readMapper, writeMapper, rateLimiter)
+        public XeroCoreApi(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user, IJsonObjectMapper readMapper, IXmlObjectMapper writeMapper, IRateLimiter rateLimiter, ITokenStore tokenStore)
+            : base(baseUri, auth, consumer, user, readMapper, writeMapper, rateLimiter, tokenStore)
         {
             Connect();
         }
         
-        public XeroCoreApi(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user)
-            : this(baseUri, auth, consumer, user, null)
+        public XeroCoreApi(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user, ITokenStore tokenStore)
+            : this(baseUri, auth, consumer, user, null, tokenStore)
         {
         }
 
-        public XeroCoreApi(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user, IRateLimiter rateLimiter)
-            : this(baseUri, auth, consumer, user, new DefaultMapper(), new DefaultMapper(), rateLimiter)
+        public XeroCoreApi(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user, IRateLimiter rateLimiter, ITokenStore tokenStore)
+            : this(baseUri, auth, consumer, user, new DefaultMapper(), new DefaultMapper(), rateLimiter, tokenStore)
         {
         }
 

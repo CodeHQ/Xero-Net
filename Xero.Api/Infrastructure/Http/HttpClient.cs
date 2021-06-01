@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using Xero.Api.Core;
+using Xero.Api.Core.Models;
 using Xero.Api.Infrastructure.Interfaces;
 using Xero.Api.Infrastructure.RateLimiter;
 
@@ -20,32 +22,36 @@ namespace Xero.Api.Infrastructure.Http
         private readonly IRateLimiter _rateLimiter;
 
         private readonly Dictionary<string, string> _headers;
+        private readonly XeroClient _xeroClient;
+        private readonly ITokenStore _tokenStore;
 
         public DateTime? ModifiedSince { get; set; }
         public IUser User { get; set; }
         
         private IConsumer Consumer { get; set; }
 
-        public HttpClient(string baseUri)
+        public HttpClient(string baseUri, ITokenStore tokenStore)
         {
             _baseUri = baseUri;
             _headers = new Dictionary<string, string>();
+            _xeroClient = new XeroClient();
+            _tokenStore = tokenStore;
         }
         
-        public HttpClient(string baseUri, IConsumer consumer, IUser user) : this(baseUri)
+        public HttpClient(string baseUri, ITokenStore tokenStore, IConsumer consumer, IUser user) : this(baseUri, tokenStore)
         {
             User = user;
             Consumer = consumer;
         }
 
-        public HttpClient(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user)
-            : this(baseUri, consumer, user)
+        public HttpClient(string baseUri, ITokenStore tokenStore, IAuthenticator auth, IConsumer consumer, IUser user)
+            : this(baseUri, tokenStore, consumer, user)
         {
             _auth = auth;
         }
 
-        public HttpClient(string baseUri, IAuthenticator auth, IConsumer consumer, IUser user, IRateLimiter rateLimiter)
-            : this(baseUri, auth, consumer, user)
+        public HttpClient(string baseUri, ITokenStore tokenStore, IAuthenticator auth, IConsumer consumer, IUser user, IRateLimiter rateLimiter)
+            : this(baseUri, tokenStore, auth, consumer, user)
         {
             _rateLimiter = rateLimiter;
         }
@@ -179,11 +185,32 @@ namespace Xero.Api.Infrastructure.Http
                 request.IfModifiedSince = ModifiedSince.Value;
             }
 
+            // add OAuth2 headers
             if (_auth != null)
             {
-                var oauthSignature = _auth.GetSignature(Consumer, User, request.RequestUri, method, Consumer);
+                //var oauthSignature = _auth.GetSignature(Consumer, User, request.RequestUri, method, Consumer);
 
-                AddHeader("Authorization", oauthSignature);
+                //AddHeader("Authorization", oauthSignature);
+
+
+                //var clientId = ConfigurationManager.AppSettings["XeroClientId"];
+                //var secret = ConfigurationManager.AppSettings["XeroSecret"];
+                //_identityClient = new RestClient("https://identity.xero.com/");
+                //var userPass = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Consumer.ConsumerKey}:{Consumer.ConsumerSecret}"));
+                //AddHeader("authorization", "Basic {userPass}");
+
+                var token = _auth.GetToken(null, null);
+
+                if (token.HasExpired)
+                {
+                    _xeroClient.AuthToken = token as XeroOAuthToken;
+                    
+                    token = _xeroClient.RefreshToken();
+                    _tokenStore.Add(token);
+                }
+                AddHeader("Authorization", $"Bearer {token.TokenKey}");
+
+                AddHeader("Xero-tenant-id", _auth.TenantId);
             }
             
             AddHeaders(request);

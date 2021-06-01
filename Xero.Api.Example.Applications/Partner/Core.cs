@@ -26,7 +26,8 @@ namespace Xero.Api.Example.Applications.Partner
                 user,
                 Mapper,
                 Mapper,
-                includeRateLimiter ? new RateLimiter() : null)
+                includeRateLimiter ? new RateLimiter() : null,
+                store)
         {
         }
     }

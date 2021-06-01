@@ -31,9 +31,9 @@ namespace Xero.Api.Example.Applications.Private
         {
             var token = new Token
             {
-                ConsumerKey = consumer.ConsumerKey,
-                ConsumerSecret = consumer.ConsumerSecret,
-                TokenKey = consumer.ConsumerKey
+                //ConsumerKey = consumer.ConsumerKey,
+                //ConsumerSecret = consumer.ConsumerSecret,
+                //TokenKey = consumer.ConsumerKey
             };
 
             return new RsaSha1Signer().CreateSignature(_certificate, token, uri, verb);
@@ -45,7 +45,7 @@ namespace Xero.Api.Example.Applications.Private
         {
             return null;
         }
-
-        public IUser User { get; set; }
+        public string TenantId { get; set; }
+        public string XeroUserId { get; set; }
     }
 }
